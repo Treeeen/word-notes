@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Word Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2218%22 fill=%22%2312181F%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D4A24C%22 font-family=%22Georgia,serif%22>W</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2312181F%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D4A24C%22 font-family=%22Georgia,serif%22>W</text></svg>">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#12181F">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #12181F; color: #E8E3D8; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  .word-serif { font-family: 'Fraunces', serif; }
+  .word-mono { font-family: 'IBM Plex Mono', monospace; }
+  button { font-family: inherit; cursor: pointer; }
+  button:disabled { cursor: default; }
+  button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid #D4A24C; outline-offset: 2px; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: #2A3542; border-radius: 4px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 1s linear infinite; display: inline-block; }
+  a { color: inherit; }
+
+  .header { border-bottom: 1px solid #232D38; padding: 28px 20px 0; }
+  .header-inner { max-width: 720px; margin: 0 auto; }
+  .title-row { display: flex; align-items: baseline; gap: 10px; }
+  .title { font-size: 30px; font-weight: 700; letter-spacing: -0.01em; }
+  .title-ipa { font-size: 12px; color: #8A93A0; }
+  .subtitle { margin: 6px 0 20px; color: #9BA5B1; font-size: 14px; }
+  .tabs { display: flex; gap: 4px; }
+  .tab { display: flex; align-items: center; gap: 6px; padding: 10px 16px; background: transparent; border: 1px solid transparent; border-radius: 8px 8px 0 0; color: #8A93A0; font-size: 14px; font-weight: 500; margin-bottom: -1px; position: relative; top: 1px; }
+  .tab.active { background: #1B2430; border-color: #D4A24C; border-bottom: 1px solid #1B2430; color: #D4A24C; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #D4A24C; color: #12181F; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 600; font-size: 14px; }
+  .btn-primary:disabled { background: #3A3226; opacity: .6; }
+  .btn-ghost { background: transparent; border: none; color: #5C6673; }
+
+  textarea, input[type=text] { width: 100%; background: #1B2430; border: 1px solid #2A3542; border-radius: 10px; padding: 14px; color: #E8E3D8; font-size: 15px; font-family: 'IBM Plex Mono', monospace; resize: vertical; }
+
+  .empty { text-align: center; padding: 40px 20px; color: #8A93A0; }
+  .word-count { font-size: 13px; color: #8A93A0; margin-bottom: 4px; }
+
+  .card { background: #1B2430; border: 1px solid #232D38; border-radius: 10px; padding: 16px 18px; position: relative; margin-bottom: 12px; }
+  .card .headword { font-size: 22px; font-weight: 600; background: linear-gradient(180deg, transparent 60%, rgba(212,162,76,0.28) 60%); padding-right: 2px; }
+  .card .phonetic { font-size: 13px; color: #8A93A0; }
+  .card .pos { color: #D4A24C; font-size: 12px; margin-right: 6px; }
+  .card .example { font-size: 13px; color: #7C8794; margin-top: 2px; }
+  .card .remove-btn { position: absolute; top: 14px; right: 44px; }
+  .card .play-btn { background: transparent; border: none; color: #D4A24C; display: inline-flex; vertical-align: middle; }
+  .card .zh { font-size: 14px; color: #B7A98A; margin-top: 6px; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  .card.learned { opacity: .55; }
+  .card .learned-btn { position: absolute; top: 14px; right: 14px; background: transparent; border: 1px solid #2A3542; border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: #5C6673; font-size: 13px; }
+  .card.learned .learned-btn { border-color: #5B8C7B; color: #5B8C7B; }
+  .word-count-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+
+  .quickadd-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .quickadd-row input { flex: 1; padding: 10px 12px; }
+  .quickadd-row button { padding: 0 16px; }
+  .status-line { font-size: 12px; color: #8A93A0; margin-top: 6px; }
+
+  .quiz-progress { display: flex; justify-content: space-between; font-size: 13px; color: #8A93A0; margin-bottom: 16px; }
+  .quiz-word-card { background: #1B2430; border: 1px solid #232D38; border-radius: 10px; padding: 22px 20px; margin-bottom: 16px; text-align: center; }
+  .quiz-word-card .headword { font-size: 26px; font-weight: 600; }
+  .quiz-word-card .phonetic { font-size: 13px; color: #8A93A0; margin-top: 4px; }
+  .quiz-prompt { font-size: 13px; color: #8A93A0; margin-bottom: 10px; }
+  .quiz-option { text-align: left; background: #1B2430; border: 1px solid #2A3542; border-radius: 8px; padding: 12px 14px; font-size: 14px; color: #E8E3D8; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; margin-bottom: 10px; }
+  .quiz-option.correct { background: #1E2E27; border-color: #5B8C7B; }
+  .quiz-option.wrong { background: #2E211E; border-color: #B4553F; }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div class="title-row">
+      <span class="title word-serif">Word Notes</span>
+      <span class="title-ipa word-mono">/wɜːrd noʊts/</span>
+    </div>
+    <p class="subtitle">Your Kindle look-ups, kept and reviewed.</p>
+    <div class="tabs" id="tabs"></div>
+  </div>
+</header>
+<main id="main"></main>
+
+<script>
+const STORAGE_KEY = "word-notes-entries";
+const ICONS = {
+  plus: "+", trash: "\u2715", volume: "\u25B6", check: "\u2713", x: "\u2715",
+  next: "\u2192", retry: "\u21BA", book: "\uD83D\uDCD6"
+};
+
+let state = {
+  words: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
+  view: "library",
+  adding: false,
+  addStatus: "",
+  inputText: "",
+  quiz: null,
+};
+
+function persist() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
+}
+
+function normalize(w) { return w.trim().toLowerCase(); }
+
+async function lookupWord(word) {
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim())}`);
+    if (!res.ok) return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
+    const data = await res.json();
+    const entry = data[0];
+    let phonetic = entry.phonetic || "";
+    let audio = "";
+    for (const p of entry.phonetics || []) {
+      if (!phonetic && p.text) phonetic = p.text;
+      if (!audio && p.audio) audio = p.audio;
+    }
+    const definitions = [];
+    outer:
+    for (const meaning of entry.meanings || []) {
+      for (const def of meaning.definitions || []) {
+        definitions.push({ pos: meaning.partOfSpeech, definition: def.definition, example: def.example || "" });
+        if (definitions.length >= 4) break outer;
+      }
+    }
+    return {
+      word: entry.word || word.trim(),
+      notFound: definitions.length === 0,
+      phonetic,
+      audio: audio.startsWith("//") ? "https:" + audio : audio,
+      definitions,
+    };
+  } catch (e) {
+    return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
+  }
+}
+
+function playAudio(url) {
+  if (!url) return;
+  new Audio(url).play().catch(() => {});
+}
+
+const CJK_RE = /[\u4e00-\u9fff]/;
+
+// Parse pasted text into { word, zh } entries. Lines containing Chinese
+// characters are treated as a single "word + Kindle meaning" entry
+// (e.g. "recollection回忆 记忆"); plain lines fall back to comma/newline
+// separated word lists.
+function parseEntries(text) {
+  const lines = text.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  const entries = [];
+  for (const line of lines) {
+    const m = line.match(CJK_RE);
+    if (m) {
+      const word = line.slice(0, m.index).trim().replace(/[,:;]+$/, "");
+      const zh = line.slice(m.index).trim();
+      if (word) entries.push({ word, zh });
+    } else {
+      line.split(",").map(s => s.trim()).filter(Boolean).forEach(w => entries.push({ word: w, zh: "" }));
+    }
+  }
+  return entries;
+}
+
+async function addWordsFromText(text, opts) {
+  opts = opts || {};
+  const parsed = parseEntries(text);
+  if (parsed.length === 0) return;
+
+  const existing = new Set(state.words.map(w => normalize(w.word)));
+  const seen = new Set();
+  const toFetch = parsed.filter(e => {
+    const n = normalize(e.word);
+    if (existing.has(n) || seen.has(n)) return false;
+    seen.add(n);
+    return true;
+  });
+
+  if (toFetch.length === 0) {
+    state.addStatus = "Those words are already in your library.";
+    render();
+    return;
+  }
+
+  state.adding = true;
+  state.addStatus = `Looking up ${toFetch.length} word${toFetch.length > 1 ? "s" : ""}...`;
+  render();
+
+  const results = [];
+  for (const e of toFetch) {
+    const r = await lookupWord(e.word);
+    results.push(Object.assign({}, r, {
+      zh: e.zh,
+      learned: false,
+      id: Date.now() + "-" + Math.random().toString(36).slice(2),
+      addedAt: Date.now(),
+    }));
+  }
+
+  state.words = results.concat(state.words);
+  persist();
+  if (opts.clearMainInput) state.inputText = "";
+  const notFoundCount = results.filter(r => r.notFound).length;
+  state.addStatus = notFoundCount
+    ? `Added ${results.length}. ${notFoundCount} had no dictionary match — kept as a note.`
+    : `Added ${results.length} word${results.length > 1 ? "s" : ""}.`;
+  state.adding = false;
+  render();
+}
+
+function toggleLearned(id) {
+  state.words = state.words.map(w => w.id === id ? Object.assign({}, w, { learned: !w.learned }) : w);
+  persist();
+  render();
+}
+
+function removeWord(id) {
+  state.words = state.words.filter(w => w.id !== id);
+  persist();
+  render();
+}
+
+function definedWords() {
+  return state.words.filter(w => w.definitions && w.definitions.length > 0);
+}
+
+function buildQuestion(pool, index, score) {
+  if (index >= pool.length) return { pool, index, score, done: true };
+  const correct = pool[index];
+  const correctDef = correct.definitions[0].definition;
+  const distractorPool = definedWords().filter(w => w.id !== correct.id);
+  const distractors = [...distractorPool].sort(() => Math.random() - 0.5).slice(0, 3).map(w => w.definitions[0].definition);
+  const options = [correctDef].concat(distractors).sort(() => Math.random() - 0.5);
+  return { pool, index, score, correctDef, options, selected: null, answered: false, word: correct };
+}
+
+function startQuiz() {
+  const dw = definedWords();
+  const unlearned = dw.filter(w => !w.learned);
+  const base = unlearned.length >= 4 ? unlearned : dw;
+  const pool = [...base].sort(() => Math.random() - 0.5).slice(0, 10);
+  state.quiz = buildQuestion(pool, 0, 0);
+  render();
+}
+
+function answerQuiz(opt) {
+  if (!state.quiz || state.quiz.answered) return;
+  const isCorrect = opt === state.quiz.correctDef;
+  state.quiz = Object.assign({}, state.quiz, { selected: opt, answered: true, score: state.quiz.score + (isCorrect ? 1 : 0) });
+  render();
+}
+
+function nextQuestion() {
+  if (!state.quiz) return;
+  state.quiz = buildQuestion(state.quiz.pool, state.quiz.index + 1, state.quiz.score);
+  render();
+}
+
+function el(html) {
+  const t = document.createElement("template");
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+
+function renderTabs() {
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = "";
+  [["library", "Library"], ["add", "Add"], ["quiz", "Quiz"]].forEach(([id, label]) => {
+    const btn = document.createElement("button");
+    btn.className = "tab" + (state.view === id ? " active" : "");
+    btn.textContent = label;
+    btn.onclick = () => { state.view = id; if (id === "quiz") state.quiz = null; render(); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderQuickAdd(container) {
+  const wrap = document.createElement("div");
+  wrap.className = "quickadd-row-wrap";
+  wrap.innerHTML = `
+    <div class="quickadd-row">
+      <input type="text" id="quickAddInput" placeholder="New word, or paste 'word 中文' from Kindle…" value="${state.quickText || ""}" />
+      <button class="btn-primary" id="quickAddBtn" ${state.adding ? "disabled" : ""}>${state.adding ? '<span class="spin">↻</span>' : ICONS.plus}</button>
+    </div>
+    ${state.addStatus ? `<div class="status-line">${state.addStatus}</div>` : ""}
+  `;
+  container.appendChild(wrap);
+  const input = wrap.querySelector("#quickAddInput");
+  const btn = wrap.querySelector("#quickAddBtn");
+  const submit = () => {
+    const val = input.value;
+    if (!val.trim() || state.adding) return;
+    addWordsFromText(val);
+  };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+  btn.addEventListener("click", submit);
+}
+
+function renderLibrary(container) {
+  renderQuickAdd(container);
+
+  if (state.words.length === 0) {
+    const empty = el(`
+      <div class="empty">
+        <div style="font-size:32px;margin-bottom:12px;opacity:.6">${ICONS.book}</div>
+        <p style="margin:0 0 16px;font-size:15px">No words yet. Add the ones from your Kindle notes above, or use the full Add tab.</p>
+        <button class="btn-primary" id="openAddTab">Open Add tab</button>
+      </div>
+    `);
+    container.appendChild(empty);
+    empty.querySelector("#openAddTab").onclick = () => { state.view = "add"; render(); };
+    return;
+  }
+
+  const learnedCount = state.words.filter(w => w.learned).length;
+  const countRow = document.createElement("div");
+  countRow.className = "word-count-row";
+  countRow.innerHTML = `
+    <span class="word-count">${state.words.length} word${state.words.length !== 1 ? "s" : ""} saved</span>
+    <span class="word-count">${learnedCount} learned</span>
+  `;
+  container.appendChild(countRow);
+
+  state.words.forEach(w => {
+    const card = document.createElement("div");
+    card.className = "card" + (w.learned ? " learned" : "");
+    let defsHtml = "";
+    if (w.notFound) {
+      defsHtml = `<p style="font-size:13px;color:#8A93A0;margin-top:8px;font-style:italic">No dictionary entry found for this one — kept as a note.</p>`;
+    } else {
+      defsHtml = `<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">` +
+        w.definitions.map(d => `
+          <div>
+            <div style="font-size:14px"><span class="pos">${d.pos}</span>${d.definition}</div>
+            ${d.example ? `<div class="example">"${d.example}"</div>` : ""}
+          </div>
+        `).join("") + `</div>`;
+    }
+    card.innerHTML = `
+      <button class="learned-btn" title="${w.learned ? "Mark as still learning" : "Mark as learned"}">${w.learned ? ICONS.check : ""}</button>
+      <button class="btn-ghost remove-btn" title="Remove">${ICONS.trash}</button>
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <span class="headword word-serif">${w.word}</span>
+        ${w.phonetic ? `<span class="phonetic word-mono">${w.phonetic}</span>` : ""}
+        ${w.audio ? `<button class="play-btn" title="Play pronunciation">${ICONS.volume}</button>` : ""}
+      </div>
+      ${w.zh ? `<div class="zh">${w.zh}</div>` : ""}
+      ${defsHtml}
+    `;
+    card.querySelector(".remove-btn").onclick = () => removeWord(w.id);
+    card.querySelector(".learned-btn").onclick = () => toggleLearned(w.id);
+    const playBtn = card.querySelector(".play-btn");
+    if (playBtn) playBtn.onclick = () => playAudio(w.audio);
+    container.appendChild(card);
+  });
+}
+
+function renderAdd(container) {
+  const wrap = el(`
+    <div>
+      <label style="display:block;font-size:13px;color:#9BA5B1;margin-bottom:8px">
+        Paste straight from your Kindle notes — "word 中文释义" one per line — or just plain words, one per line or separated by commas.
+      </label>
+      <textarea id="addTextarea" rows="7" placeholder="recollection回忆 记忆&#10;profound 发自心底的 深远的&#10;ephemeral"></textarea>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
+        <button class="btn-primary" id="addBtn" ${state.adding ? "disabled" : ""}>
+          ${state.adding ? '<span class="spin">↻</span> Looking up…' : ICONS.plus + " Add words"}
+        </button>
+        ${state.addStatus ? `<span style="font-size:13px;color:#8A93A0">${state.addStatus}</span>` : ""}
+      </div>
+    </div>
+  `);
+  container.appendChild(wrap);
+  const ta = wrap.querySelector("#addTextarea");
+  ta.value = state.inputText;
+  ta.addEventListener("input", () => { state.inputText = ta.value; });
+  wrap.querySelector("#addBtn").onclick = () => addWordsFromText(ta.value, { clearMainInput: true });
+}
+
+function renderQuiz(container) {
+  const dw = definedWords();
+  if (dw.length < 4) {
+    container.appendChild(el(`
+      <div class="empty">
+        <div style="font-size:32px;margin-bottom:12px;opacity:.6">🧠</div>
+        <p style="font-size:15px">Add at least 4 words with definitions to unlock the quiz.</p>
+      </div>
+    `));
+    return;
+  }
+
+  if (!state.quiz) {
+    const wrap = el(`
+      <div class="empty">
+        <p style="color:#9BA5B1;margin-bottom:18px;font-size:15px">Test yourself on ${Math.min(10, dw.length)} words from your library.</p>
+        <button class="btn-primary" id="startQuizBtn">Start quiz</button>
+      </div>
+    `);
+    container.appendChild(wrap);
+    wrap.querySelector("#startQuizBtn").onclick = startQuiz;
+    return;
+  }
+
+  if (state.quiz.done) {
+    const wrap = el(`
+      <div class="empty">
+        <p class="word-serif" style="font-size:26px;margin-bottom:6px">${state.quiz.score} / ${state.quiz.pool.length}</p>
+        <p style="color:#8A93A0;margin-bottom:20px;font-size:14px">Quiz complete</p>
+        <button class="btn-primary" id="retryQuizBtn">${ICONS.retry} Try again</button>
+      </div>
+    `);
+    container.appendChild(wrap);
+    wrap.querySelector("#retryQuizBtn").onclick = startQuiz;
+    return;
+  }
+
+  const q = state.quiz;
+  const wrap = el(`
+    <div>
+      <div class="quiz-progress">
+        <span>Question ${q.index + 1} of ${q.pool.length}</span>
+        <span>Score: ${q.score}</span>
+      </div>
+      <div class="quiz-word-card">
+        <span class="headword word-serif">${q.word.word}</span>
+        ${q.word.phonetic ? `<div class="phonetic word-mono">${q.word.phonetic}</div>` : ""}
+      </div>
+      ${q.answered && q.word.zh ? `<p style="text-align:center;font-size:13px;color:#B7A98A;margin:-10px 0 14px">${q.word.zh}</p>` : ""}
+      <p class="quiz-prompt">Which definition matches?</p>
+      <div id="quizOptions"></div>
+      ${q.answered ? `<button class="btn-primary" id="nextQBtn">${q.index + 1 >= q.pool.length ? "See results" : "Next"} ${ICONS.next}</button>` : ""}
+    </div>
+  `);
+  container.appendChild(wrap);
+  const optsContainer = wrap.querySelector("#quizOptions");
+  q.options.forEach(opt => {
+    const isSelected = q.selected === opt;
+    const isCorrectOpt = opt === q.correctDef;
+    let cls = "quiz-option";
+    if (q.answered && isCorrectOpt) cls += " correct";
+    else if (q.answered && isSelected && !isCorrectOpt) cls += " wrong";
+    const btn = document.createElement("button");
+    btn.className = cls;
+    btn.disabled = q.answered;
+    btn.innerHTML = `<span>${opt}</span><span>${q.answered && isCorrectOpt ? ICONS.check : (q.answered && isSelected ? ICONS.x : "")}</span>`;
+    btn.onclick = () => answerQuiz(opt);
+    optsContainer.appendChild(btn);
+  });
+  if (q.answered) wrap.querySelector("#nextQBtn").onclick = nextQuestion;
+}
+
+function render() {
+  renderTabs();
+  const main = document.getElementById("main");
+  main.innerHTML = "";
+  if (state.view === "add") renderAdd(main);
+  else if (state.view === "quiz") renderQuiz(main);
+  else renderLibrary(main);
+}
+
+render();
+</script>
+</body>
+</html>
