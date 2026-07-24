@@ -355,6 +355,32 @@ function removeWord(id) {
   render();
 }
 
+async function retryFailedLookups() {
+  const failed = state.words.filter(w => w.notFound);
+  if (failed.length === 0) return;
+  state.adding = true;
+  render();
+  for (let i = 0; i < failed.length; i++) {
+    const w = failed[i];
+    state.addStatus = `Retrying ${i + 1} of ${failed.length}: ${w.word}...`;
+    render();
+    const r = await lookupWord(w.word);
+    state.words = state.words.map(item =>
+      item.id === w.id
+        ? Object.assign({}, item, { notFound: r.notFound, phonetic: r.phonetic, audio: r.audio, definitions: r.definitions })
+        : item
+    );
+    await sleep(120);
+  }
+  persist();
+  const stillFailed = state.words.filter(w => w.notFound).length;
+  state.addStatus = stillFailed
+    ? `Retried ${failed.length}. ${stillFailed} still have no dictionary match.`
+    : `Retried ${failed.length}. All resolved.`;
+  state.adding = false;
+  render();
+}
+
 function definedWords() {
   return state.words.filter(w => w.definitions && w.definitions.length > 0);
 }
@@ -455,6 +481,20 @@ function renderLibrary(container) {
     <span class="word-count">${learnedCount} learned</span>
   `;
   container.appendChild(countRow);
+
+  const failedCount = state.words.filter(w => w.notFound).length;
+  if (failedCount > 0) {
+    const retryWrap = el(`
+      <div style="margin-bottom:14px">
+        <button class="btn-ghost" id="retryFailedBtn" style="border:1px dashed #B4553F;border-radius:8px;padding:8px 12px;font-size:13px;color:#C98470" ${state.adding ? "disabled" : ""}>
+          ${state.adding ? '<span class="spin">↻</span> ' : ""}Retry ${failedCount} word${failedCount > 1 ? "s" : ""} with no definition
+        </button>
+        ${state.addStatus ? `<div class="status-line">${state.addStatus}</div>` : ""}
+      </div>
+    `);
+    container.appendChild(retryWrap);
+    retryWrap.querySelector("#retryFailedBtn").onclick = retryFailedLookups;
+  }
 
   state.words.forEach(w => {
     const card = document.createElement("div");
