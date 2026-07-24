@@ -349,6 +349,24 @@ function toggleLearned(id) {
   render();
 }
 
+function startEditDefinition(id) {
+  state.editingId = id;
+  render();
+}
+
+function cancelEditDefinition() {
+  state.editingId = null;
+  render();
+}
+
+function saveCustomDefinition(id, text) {
+  const trimmed = text.trim();
+  state.words = state.words.map(w => w.id === id ? Object.assign({}, w, { customDefinition: trimmed }) : w);
+  state.editingId = null;
+  persist();
+  render();
+}
+
 function removeWord(id) {
   state.words = state.words.filter(w => w.id !== id);
   persist();
@@ -499,9 +517,31 @@ function renderLibrary(container) {
   state.words.forEach(w => {
     const card = document.createElement("div");
     card.className = "card" + (w.learned ? " learned" : "");
+    const isEditing = state.editingId === w.id;
     let defsHtml = "";
-    if (w.notFound) {
-      defsHtml = `<p style="font-size:13px;color:#8A93A0;margin-top:8px;font-style:italic">No dictionary entry found for this one — kept as a note.</p>`;
+
+    if (isEditing) {
+      defsHtml = `
+        <div style="margin-top:10px">
+          <textarea id="editDefTa-${w.id}" rows="3" style="width:100%;background:#12181F;border:1px solid #2A3542;border-radius:8px;padding:10px;color:#E8E3D8;font-size:14px;font-family:'IBM Plex Sans',system-ui,sans-serif;resize:vertical">${w.customDefinition || ""}</textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn-primary" id="saveDefBtn-${w.id}" style="padding:6px 14px;font-size:13px">Save</button>
+            <button class="btn-ghost" id="cancelDefBtn-${w.id}" style="font-size:13px;color:#8A93A0">Cancel</button>
+          </div>
+        </div>
+      `;
+    } else if (w.customDefinition) {
+      defsHtml = `
+        <div style="margin-top:10px">
+          <div style="font-size:14px">${w.customDefinition}</div>
+          <button class="btn-ghost" id="editDefBtn-${w.id}" style="font-size:12px;color:#8A93A0;margin-top:6px">Edit definition</button>
+        </div>
+      `;
+    } else if (w.notFound) {
+      defsHtml = `
+        <p style="font-size:13px;color:#8A93A0;margin-top:8px;font-style:italic">No dictionary entry found for this one — kept as a note.</p>
+        <button class="btn-ghost" id="editDefBtn-${w.id}" style="font-size:12px;color:#B7A98A">+ Add definition</button>
+      `;
     } else {
       defsHtml = `<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">` +
         w.definitions.map(d => `
@@ -509,8 +549,10 @@ function renderLibrary(container) {
             <div style="font-size:14px"><span class="pos">${d.pos}</span>${d.definition}</div>
             ${d.example ? `<div class="example">"${d.example}"</div>` : ""}
           </div>
-        `).join("") + `</div>`;
+        `).join("") + `</div>
+        <button class="btn-ghost" id="editDefBtn-${w.id}" style="font-size:12px;color:#8A93A0;margin-top:6px">Edit definition</button>`;
     }
+
     card.innerHTML = `
       <button class="learned-btn" title="${w.learned ? "Mark as still learning" : "Mark as learned"}">${w.learned ? ICONS.check : ""}</button>
       <button class="btn-ghost remove-btn" title="Remove">${ICONS.trash}</button>
@@ -526,6 +568,12 @@ function renderLibrary(container) {
     card.querySelector(".learned-btn").onclick = () => toggleLearned(w.id);
     const playBtn = card.querySelector(".play-btn");
     if (playBtn) playBtn.onclick = () => playAudio(w.audio);
+    const editBtn = card.querySelector(`#editDefBtn-${w.id}`);
+    if (editBtn) editBtn.onclick = () => startEditDefinition(w.id);
+    const saveBtn = card.querySelector(`#saveDefBtn-${w.id}`);
+    if (saveBtn) saveBtn.onclick = () => saveCustomDefinition(w.id, card.querySelector(`#editDefTa-${w.id}`).value);
+    const cancelBtn = card.querySelector(`#cancelDefBtn-${w.id}`);
+    if (cancelBtn) cancelBtn.onclick = cancelEditDefinition;
     container.appendChild(card);
   });
 }
