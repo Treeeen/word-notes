@@ -4,13 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Word Notes</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2218%22 fill=%22%2312181F%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D4A24C%22 font-family=%22Georgia,serif%22>W</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2312181F%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D4A24C%22 font-family=%22Georgia,serif%22>W</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22https://douc.cc/hCj1Ec viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2218%22 fill=%22%2312181F%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D4A24C%22 font-family=%22Georgia,serif%22>W</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22https://douc.cc/hCj1Ec viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2312181F%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D4A24C%22 font-family=%22Georgia,serif%22>W</text></svg>">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#12181F">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  @import url('https://douc.cc/krPb3B,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #12181F; color: #E8E3D8; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
   .word-serif { font-family: 'Fraunces', serif; }
@@ -71,46 +71,30 @@
   .quiz-option { text-align: left; background: #1B2430; border: 1px solid #2A3542; border-radius: 8px; padding: 12px 14px; font-size: 14px; color: #E8E3D8; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; margin-bottom: 10px; }
   .quiz-option.correct { background: #1E2E27; border-color: #5B8C7B; }
   .quiz-option.wrong { background: #2E211E; border-color: #B4553F; }
-</style>
-</head>
-<body>
-<header class="header">
-  <div class="header-inner">
-    <div class="title-row">
-      <span class="title word-serif">Word Notes</span>
-      <span class="title-ipa word-mono">/wɜːrd noʊts/</span>
-    </div>
-    <p class="subtitle">Your Kindle look-ups, kept and reviewed.</p>
-    <div class="tabs" id="tabs"></div>
-  </div>
-</header>
-<main id="main"></main>
 
-<script>
-const STORAGE_KEY = "word-notes-entries";
-const ICONS = {
-  plus: "+", trash: "\u2715", volume: "\u25B6", check: "\u2713", x: "\u2715",
-  next: "\u2192", retry: "\u21BA", book: "\uD83D\uDCD6"
-};
 
-let state = {
-  words: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
-  view: "library",
-  adding: false,
-  addStatus: "",
-  inputText: "",
-  quiz: null,
-};
 
-function persist() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
-}
 
-function normalize(w) { return w.trim().toLowerCase(); }
+  
 
-async function lookupWord(word) {
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim())}`);
+    
+
+      Word Notes
+      /wɜːrd noʊts/
+    
+
+    
+Your Kindle look-ups, kept and reviewed.
+
+
+    
+
+  
+
+
+
+
+https://douc.cc/2AYo39R{encodeURIComponent(word.trim())}`);
     if (!res.ok) return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
     const data = await res.json();
     const entry = data[0];
@@ -146,6 +130,120 @@ function playAudio(url) {
 }
 
 const CJK_RE = /[\u4e00-\u9fff]/;
+
+const SEED_TEXT = `recollection回忆 记忆
+profound 发自心底的 深远的
+enslave 征服 使成为奴隶
+resonate 共振 共鸣
+extraneous 外来的 无关紧要的
+forceful 強有力的
+elation 得意洋洋 兴高采烈
+hindrance 阻碍
+incessant 不停的 重复的
+proliferate 使激增 使扩散 扩散
+emanate 散发 产生
+mundane世俗的 平凡的
+commensurate 相当的 相等的
+preponderance 数量 影响等上的 优势
+loathing 厌恶 憎恨
+loathsome 讨厌的 令人作呕的
+annihilate 毁灭 彻底击败
+peculiar 奇怪的 异常的 独特的
+vortex 漩涡
+emanation 散发 产生
+subliminally 潜意识
+modification 缓和 减轻 限制
+subtle 细微的 难以察觉的 敏锐的 巧妙的
+euphoria 幸福感
+overcast 多云的 阴的 忧郁的
+salvation 解决办法 获拯救
+resentment 怨恨 不满
+futile 无用的 无效的 无意义的
+residue 残渣 剩余
+dormant 潜在的 潜伏的 冬眠
+obnoxious 讨厌的 可憎的
+vehement 热烈的 激烈的
+projection 投递 发射 预测
+phantom 幽灵 幻想
+involuntary 无意的 本能的
+preoccupation 全神贯注
+reverence 敬仰 崇敬
+peripheral 无关紧要的 外围的 外部的
+remorse 悔恨 自责
+replica 仿制品
+superficial 表面的 肤浅的 草率的
+deaden 缓解 减弱 使麻木 使隔音
+incisive 尖锐的 锋利的
+psyche 灵魂 心灵 精神
+delusion 错觉 误会 欺骗 妄想
+anesthetic 麻醉药
+static 静止的 静态的 静电的
+demeanor 举止 行为 品行
+contaminated 受污染的 受毒害的
+contagious 接触传染的 感染性的 蔓延的
+surrender 投降 自首 屈服 让步
+reinforce 证实 强化 补充 加固
+subservient 屈从的 从属的 辅助的
+delve 钻研 挖掘
+poised 准备行动的 悬空的 摇摆不定的 从容的
+destitute 缺乏的 穷困的
+respite 暂停 缓解
+discursive 散漫的 不着边际的 推论的
+sabotage 捣乱 暗中破坏
+ephemeral 转瞬的 短暂的
+abdomen 腹部
+unfathomable 难以了解的 深不可测的
+illusory 幻觉的 虚假的
+inextricably 无法解决地 无法摆脱地
+pervade 渗透 弥漫
+disguise 隐藏 使乔装
+externalization 表达 把归于外因
+poignant 深刻的 辛酸的 强烈的
+inconceivable 不可想象的
+accustomed 习惯的 适应的
+oscillate 摆动 徘徊 犹豫
+polarity 分歧 对立 极性
+fleeting 飞逝的
+catalyst 催化 刺激因素
+subside 平息 平静 下沉
+humanity 人类 人性 仁慈
+sanity 头脑清醒 神志正常
+relinquish 放弃 让出 交出 松开
+entrench 保守 牢固 用壕沟围
+consistent 一贯的 始终如一的
+archetypal 原型 典型
+subjugate 征服
+menstrual 月经
+inasmuch 由于 因为 鉴于
+menses 生理期
+perceive 觉察 感知 理解
+perspective 前途 观点 想法 透视图 远景 景观
+recipe 食谱 烹饪方法 药方 处方 诀窍 方法
+world-weary 厌倦人生的
+sullen 郁郁寡欢的 阴沉的
+psychic 心灵的 精神的
+neurotic 过于忧虑的 神经过敏的
+elude 逃避 躲避 难倒
+precarious 不稳定的 不安全的 碰机会的
+empathy 同情 共鸣
+insight 洞察力 见识 见解
+collective 共同的 典型的
+mortality 致命性
+heal 使治愈 使和解 治愈 和解
+alleviate 减轻 缓解
+fatalistic 宿命论的
+connotation 内涵意义 隐含意义
+lethargic 无精打采
+cease 停止 结束
+deceive 欺骗 蒙骗 欺诈
+compulsion 难以克制的 强烈冲动欲望 强制力
+transient 短暂的 瞬间的
+inertia 迟钝 无活力
+mental-emotional 心理情感
+redemption 赎回 挽救
+radiant 满面春风的 明亮的
+indestructible 不可摧毁的
+continuum 统一体 连续体`;
 
 // Parse pasted text into { word, zh } entries. Lines containing Chinese
 // characters are treated as a single "word + Kindle meaning" entry
@@ -283,11 +381,17 @@ function renderQuickAdd(container) {
   const wrap = document.createElement("div");
   wrap.className = "quickadd-row-wrap";
   wrap.innerHTML = `
-    <div class="quickadd-row">
-      <input type="text" id="quickAddInput" placeholder="New word, or paste 'word 中文' from Kindle…" value="${state.quickText || ""}" />
-      <button class="btn-primary" id="quickAddBtn" ${state.adding ? "disabled" : ""}>${state.adding ? '<span class="spin">↻</span>' : ICONS.plus}</button>
-    </div>
-    ${state.addStatus ? `<div class="status-line">${state.addStatus}</div>` : ""}
+    
+
+      
+${state.quickText || 
+
+      ${state.adding ? '↻' : ICONS.plus}
+    
+
+    ${state.addStatus ? `
+${state.addStatus}
+` : ""}
   `;
   container.appendChild(wrap);
   const input = wrap.querySelector("#quickAddInput");
@@ -306,11 +410,18 @@ function renderLibrary(container) {
 
   if (state.words.length === 0) {
     const empty = el(`
-      <div class="empty">
-        <div style="font-size:32px;margin-bottom:12px;opacity:.6">${ICONS.book}</div>
-        <p style="margin:0 0 16px;font-size:15px">No words yet. Add the ones from your Kindle notes above, or use the full Add tab.</p>
-        <button class="btn-primary" id="openAddTab">Open Add tab</button>
-      </div>
+      
+
+        
+${ICONS.book}
+
+        
+No words yet. Add the ones from your Kindle notes above, or use the full Add tab.
+
+
+        Open Add tab
+      
+
     `);
     container.appendChild(empty);
     empty.querySelector("#openAddTab").onclick = () => { state.view = "add"; render(); };
@@ -321,8 +432,8 @@ function renderLibrary(container) {
   const countRow = document.createElement("div");
   countRow.className = "word-count-row";
   countRow.innerHTML = `
-    <span class="word-count">${state.words.length} word${state.words.length !== 1 ? "s" : ""} saved</span>
-    <span class="word-count">${learnedCount} learned</span>
+    ${state.words.length} word${state.words.length !== 1 ? "s" : ""} saved
+    ${learnedCount} learned
   `;
   container.appendChild(countRow);
 
@@ -331,25 +442,43 @@ function renderLibrary(container) {
     card.className = "card" + (w.learned ? " learned" : "");
     let defsHtml = "";
     if (w.notFound) {
-      defsHtml = `<p style="font-size:13px;color:#8A93A0;margin-top:8px;font-style:italic">No dictionary entry found for this one — kept as a note.</p>`;
+      defsHtml = `
+No dictionary entry found for this one — kept as a note.
+
+`;
     } else {
-      defsHtml = `<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">` +
+      defsHtml = `
+` +
         w.definitions.map(d => `
-          <div>
-            <div style="font-size:14px"><span class="pos">${d.pos}</span>${d.definition}</div>
-            ${d.example ? `<div class="example">"${d.example}"</div>` : ""}
-          </div>
-        `).join("") + `</div>`;
+          
+
+            
+${d.pos}${d.definition}
+
+            ${d.example ? `
+"${d.example}"
+` : ""}
+          
+
+        `).join("") + `
+`;
     }
     card.innerHTML = `
-      <button class="learned-btn" title="${w.learned ? "Mark as still learning" : "Mark as learned"}">${w.learned ? ICONS.check : ""}</button>
-      <button class="btn-ghost remove-btn" title="Remove">${ICONS.trash}</button>
-      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-        <span class="headword word-serif">${w.word}</span>
-        ${w.phonetic ? `<span class="phonetic word-mono">${w.phonetic}</span>` : ""}
-        ${w.audio ? `<button class="play-btn" title="Play pronunciation">${ICONS.volume}</button>` : ""}
-      </div>
-      ${w.zh ? `<div class="zh">${w.zh}</div>` : ""}
+      ${w.learned ? ICONS.check : ""}
+      ${ICONS.trash}
+      
+${w.word}
+
+        ${w.phonetic ? `
+${w.phonetic}
+` : ""}
+        ${w.audio ? `${ICONS.volume}
+` : ""}
+      
+
+      ${w.zh ? `
+${w.zh}
+` : ""}
       ${defsHtml}
     `;
     card.querySelector(".remove-btn").onclick = () => removeWord(w.id);
@@ -362,44 +491,77 @@ function renderLibrary(container) {
 
 function renderAdd(container) {
   const wrap = el(`
-    <div>
-      <label style="display:block;font-size:13px;color:#9BA5B1;margin-bottom:8px">
+    
+
+      
+9BA5B1;margin-bottom:8px">
         Paste straight from your Kindle notes — "word 中文释义" one per line — or just plain words, one per line or separated by commas.
-      </label>
-      <textarea id="addTextarea" rows="7" placeholder="recollection回忆 记忆&#10;profound 发自心底的 深远的&#10;ephemeral"></textarea>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
-        <button class="btn-primary" id="addBtn" ${state.adding ? "disabled" : ""}>
-          ${state.adding ? '<span class="spin">↻</span> Looking up…' : ICONS.plus + " Add words"}
-        </button>
-        ${state.addStatus ? `<span style="font-size:13px;color:#8A93A0">${state.addStatus}</span>` : ""}
-      </div>
-    </div>
+      
+
+      
+10;ephemeral">
+
+      
+
+        B7A98A">
+          Load all 116 words from your Kindle notes
+        
+      
+
+      
+
+          ${state.adding ? '↻ Looking up…' : ICONS.plus + " Add words"}
+        
+
+        ${state.addStatus ? `
+${state.addStatus}
+` : ""}
+      
+
+    
+
   `);
   container.appendChild(wrap);
   const ta = wrap.querySelector("#addTextarea");
   ta.value = state.inputText;
   ta.addEventListener("input", () => { state.inputText = ta.value; });
   wrap.querySelector("#addBtn").onclick = () => addWordsFromText(ta.value, { clearMainInput: true });
+  wrap.querySelector("#loadSeedBtn").onclick = () => {
+    ta.value = SEED_TEXT;
+    state.inputText = SEED_TEXT;
+  };
 }
 
 function renderQuiz(container) {
   const dw = definedWords();
   if (dw.length < 4) {
     container.appendChild(el(`
-      <div class="empty">
-        <div style="font-size:32px;margin-bottom:12px;opacity:.6">🧠</div>
-        <p style="font-size:15px">Add at least 4 words with definitions to unlock the quiz.</p>
-      </div>
+      
+
+        
+🧠
+
+        
+Add at least 4 words with definitions to unlock the quiz.
+
+
+      
+
     `));
     return;
   }
 
   if (!state.quiz) {
     const wrap = el(`
-      <div class="empty">
-        <p style="color:#9BA5B1;margin-bottom:18px;font-size:15px">Test yourself on ${Math.min(10, dw.length)} words from your library.</p>
-        <button class="btn-primary" id="startQuizBtn">Start quiz</button>
-      </div>
+      
+
+        
+Test yourself on ${Math.min(10, dw.length)} words from your library.
+
+
+        Start quiz
+      
+
     `);
     container.appendChild(wrap);
     wrap.querySelector("#startQuizBtn").onclick = startQuiz;
@@ -408,11 +570,19 @@ function renderQuiz(container) {
 
   if (state.quiz.done) {
     const wrap = el(`
-      <div class="empty">
-        <p class="word-serif" style="font-size:26px;margin-bottom:6px">${state.quiz.score} / ${state.quiz.pool.length}</p>
-        <p style="color:#8A93A0;margin-bottom:20px;font-size:14px">Quiz complete</p>
-        <button class="btn-primary" id="retryQuizBtn">${ICONS.retry} Try again</button>
-      </div>
+      
+
+        
+${state.quiz.score} / ${state.quiz.pool.length}
+
+
+        
+Quiz complete
+
+
+        ${ICONS.retry} Try again
+      
+
     `);
     container.appendChild(wrap);
     wrap.querySelector("#retryQuizBtn").onclick = startQuiz;
@@ -421,20 +591,35 @@ function renderQuiz(container) {
 
   const q = state.quiz;
   const wrap = el(`
-    <div>
-      <div class="quiz-progress">
-        <span>Question ${q.index + 1} of ${q.pool.length}</span>
-        <span>Score: ${q.score}</span>
-      </div>
-      <div class="quiz-word-card">
-        <span class="headword word-serif">${q.word.word}</span>
-        ${q.word.phonetic ? `<div class="phonetic word-mono">${q.word.phonetic}</div>` : ""}
-      </div>
-      ${q.answered && q.word.zh ? `<p style="text-align:center;font-size:13px;color:#B7A98A;margin:-10px 0 14px">${q.word.zh}</p>` : ""}
-      <p class="quiz-prompt">Which definition matches?</p>
-      <div id="quizOptions"></div>
-      ${q.answered ? `<button class="btn-primary" id="nextQBtn">${q.index + 1 >= q.pool.length ? "See results" : "Next"} ${ICONS.next}</button>` : ""}
-    </div>
+    
+
+      
+
+        Question ${q.index + 1} of ${q.pool.length}
+        Score: ${q.score}
+      
+
+      
+
+        ${q.word.word}
+        ${q.word.phonetic ? `
+${q.word.phonetic}
+` : ""}
+      
+
+      ${q.answered && q.word.zh ? `
+${q.word.zh}
+
+` : ""}
+      
+Which definition matches?
+
+
+      
+
+      ${q.answered ? `${q.index + 1 >= q.pool.length ? "See results" : "Next"} ${ICONS.next}` : ""}
+    
+
   `);
   container.appendChild(wrap);
   const optsContainer = wrap.querySelector("#quizOptions");
@@ -447,7 +632,7 @@ function renderQuiz(container) {
     const btn = document.createElement("button");
     btn.className = cls;
     btn.disabled = q.answered;
-    btn.innerHTML = `<span>${opt}</span><span>${q.answered && isCorrectOpt ? ICONS.check : (q.answered && isSelected ? ICONS.x : "")}</span>`;
+    btn.innerHTML = `${opt}${q.answered && isCorrectOpt ? ICONS.check : (q.answered && isSelected ? ICONS.x : "")}`;
     btn.onclick = () => answerQuiz(opt);
     optsContainer.appendChild(btn);
   });
@@ -464,6 +649,3 @@ function render() {
 }
 
 render();
-</script>
-</body>
-</html>
