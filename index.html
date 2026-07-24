@@ -108,36 +108,48 @@ function persist() {
 
 function normalize(w) { return w.trim().toLowerCase(); }
 
-async function lookupWord(word) {
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim())}`);
-    if (!res.ok) return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
-    const data = await res.json();
-    const entry = data[0];
-    let phonetic = entry.phonetic || "";
-    let audio = "";
-    for (const p of entry.phonetics || []) {
-      if (!phonetic && p.text) phonetic = p.text;
-      if (!audio && p.audio) audio = p.audio;
-    }
-    const definitions = [];
-    outer:
-    for (const meaning of entry.meanings || []) {
-      for (const def of meaning.definitions || []) {
-        definitions.push({ pos: meaning.partOfSpeech, definition: def.definition, example: def.example || "" });
-        if (definitions.length >= 4) break outer;
-      }
-    }
-    return {
-      word: entry.word || word.trim(),
-      notFound: definitions.length === 0,
-      phonetic,
-      audio: audio.startsWith("//") ? "https:" + audio : audio,
-      definitions,
-    };
-  } catch (e) {
-    return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function lookupWordOnce(word) {
+  const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim())}`);
+  if (res.status === 429) throw new Error("rate-limited");
+  if (!res.ok) return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
+  const data = await res.json();
+  const entry = data[0];
+  let phonetic = entry.phonetic || "";
+  let audio = "";
+  for (const p of entry.phonetics || []) {
+    if (!phonetic && p.text) phonetic = p.text;
+    if (!audio && p.audio) audio = p.audio;
   }
+  const definitions = [];
+  outer:
+  for (const meaning of entry.meanings || []) {
+    for (const def of meaning.definitions || []) {
+      definitions.push({ pos: meaning.partOfSpeech, definition: def.definition, example: def.example || "" });
+      if (definitions.length >= 4) break outer;
+    }
+  }
+  return {
+    word: entry.word || word.trim(),
+    notFound: definitions.length === 0,
+    phonetic,
+    audio: audio.startsWith("//") ? "https:" + audio : audio,
+    definitions,
+  };
+}
+
+async function lookupWord(word) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await lookupWordOnce(word);
+    } catch (e) {
+      if (attempt < 2) await sleep(500 * (attempt + 1));
+    }
+  }
+  return { word: word.trim(), notFound: true, definitions: [], phonetic: "", audio: "" };
 }
 
 function playAudio(url) {
@@ -306,7 +318,10 @@ async function addWordsFromText(text, opts) {
   render();
 
   const results = [];
-  for (const e of toFetch) {
+  for (let i = 0; i < toFetch.length; i++) {
+    const e = toFetch[i];
+    state.addStatus = `Looking up ${i + 1} of ${toFetch.length}: ${e.word}...`;
+    render();
     const r = await lookupWord(e.word);
     results.push(Object.assign({}, r, {
       zh: e.zh,
@@ -314,6 +329,7 @@ async function addWordsFromText(text, opts) {
       id: Date.now() + "-" + Math.random().toString(36).slice(2),
       addedAt: Date.now(),
     }));
+    await sleep(120);
   }
 
   state.words = results.concat(state.words);
